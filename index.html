@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#123b35" />
+    <title>DOGEAT-WISE | フード成分換算ツール</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="DOGEAT-WISE ホーム">
+        <span class="brand-mark" aria-hidden="true">🐾</span>
+        <span>DOGEAT-<strong>WISE</strong></span>
+      </a>
+      <span class="header-label">フード成分換算ツール</span>
+    </header>
+
+    <main id="top" class="app-shell">
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">保証成分値を、比較できる数字へ</p>
+        <h1 id="page-title">フード成分換算ツール</h1>
+        <p>入力した成分を乾物換算（DM%）と、1,000kcalあたりの量にすぐ換算します。</p>
+      </section>
+
+      <aside class="notice" aria-label="大切なご案内">
+        <span aria-hidden="true">i</span>
+        <p><strong>参考換算値です。</strong>表示される数値は入力された保証成分値・水分値・代謝エネルギーをもとにした計算値であり、実際の製品中の栄養素量（実測値）を示すものではありません。</p>
+      </aside>
+
+      <section id="food-list" aria-label="入力したフード"></section>
+
+      <div class="actions">
+        <button id="add-food" class="button button-primary" type="button">＋ 別のフードを追加</button>
+        <button id="compare-foods" class="button button-outline" type="button" hidden>比較する</button>
+      </div>
+
+      <section id="comparison" class="comparison" hidden aria-labelledby="comparison-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">複数フードを並べて確認</p>
+            <h2 id="comparison-title">フードを比較</h2>
+          </div>
+          <button id="close-comparison" class="text-button" type="button">閉じる</button>
+        </div>
+        <p class="comparison-help">入力済みの栄養素だけを表示します。横にスクロールしてご覧ください。</p>
+        <div class="table-wrap">
+          <table id="comparison-table"></table>
+        </div>
+      </section>
+    </main>
+
+    <template id="food-template">
+      <article class="food-card">
+        <div class="card-heading">
+          <div>
+            <p class="food-number"></p>
+            <h2 class="food-title">フードを入力</h2>
+          </div>
+          <button class="remove-food icon-button" type="button" aria-label="このフードを削除" hidden>×</button>
+        </div>
+
+        <div class="input-panel">
+          <label class="field full-width">フード名 <span>任意</span>
+            <input class="food-name" type="text" maxlength="40" placeholder="例：○○ ドッグフード" />
+          </label>
+          <div class="form-grid essentials">
+            <label class="field">水分 <b>必須</b>
+              <span class="input-unit"><input class="moisture" type="number" min="0" max="99.99" step="0.01" inputmode="decimal" placeholder="例：10" aria-describedby="moisture-error" /><em>%</em></span>
+              <small class="field-error moisture-error" id="moisture-error"></small>
+            </label>
+            <label class="field">代謝エネルギー <b>必須</b>
+              <span class="input-unit"><input class="energy" type="number" min="0" step="0.1" inputmode="decimal" placeholder="例：380" aria-describedby="energy-error" /><em>kcal</em></span>
+              <small class="field-error energy-error" id="energy-error"></small>
+            </label>
+          </div>
+          <fieldset class="unit-choice">
+            <legend>MEの単位 <b>必須</b></legend>
+            <label><input class="energy-unit" type="radio" value="100g" checked /> <span>kcal / 100g</span></label>
+            <label><input class="energy-unit" type="radio" value="kg" /> <span>kcal / kg</span></label>
+          </fieldset>
+        </div>
+
+        <div class="nutrient-panel">
+          <div class="panel-heading">
+            <div><h3>保証成分値</h3><p>分かる項目だけ入力してください</p></div>
+            <span class="percent-chip">すべて %</span>
+          </div>
+          <div class="nutrient-inputs basic-nutrients"></div>
+          <div class="optional-wrap" hidden>
+            <p class="optional-label">追加した成分</p>
+            <div class="nutrient-inputs optional-nutrients"></div>
+          </div>
+          <div class="custom-nutrients"></div>
+          <div class="add-nutrient-row">
+            <select class="optional-select" aria-label="追加する成分">
+              <option value="">成分を追加</option>
+              <option value="カルシウム">カルシウム</option>
+              <option value="リン">リン</option>
+              <option value="ナトリウム">ナトリウム</option>
+            </select>
+            <button class="add-custom text-button" type="button">＋ その他の成分</button>
+          </div>
+        </div>
+
+        <section class="results" aria-live="polite">
+          <div class="results-heading"><div><p class="eyebrow">入力すると自動で更新</p><h3>換算結果</h3></div><span class="result-status">水分・MEを入力してください</span></div>
+          <div class="result-cards"></div>
+        </section>
+      </article>
+    </template>
+
+    <template id="nutrient-template">
+      <label class="nutrient-field"><span class="nutrient-label"></span><span class="input-unit"><input type="number" min="0" max="100" step="0.01" inputmode="decimal" placeholder="例：30" /><em>%</em></span></label>
+    </template>
+    <template id="custom-nutrient-template">
+      <div class="custom-field"><label><input class="custom-name" type="text" maxlength="24" placeholder="成分名" aria-label="その他の成分名" /></label><span class="input-unit"><input class="custom-value" type="number" min="0" max="100" step="0.01" inputmode="decimal" placeholder="%" aria-label="その他の成分値（%）" /><em>%</em></span><button class="remove-custom" type="button" aria-label="この成分を削除">×</button></div>
+    </template>
+    <script src="app.js"></script>
+  </body>
+</html>
