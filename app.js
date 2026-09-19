@@ -8,6 +8,7 @@ const addFoodButton = document.querySelector("#add-food");
 const compareButton = document.querySelector("#compare-foods");
 const comparison = document.querySelector("#comparison");
 const comparisonTable = document.querySelector("#comparison-table");
+let foodSequence = 0;
 
 function addNutrient(container, name) {
   const item = nutrientTemplate.content.cloneNode(true);
@@ -21,6 +22,13 @@ function addNutrient(container, name) {
 function createFood() {
   const fragment = foodTemplate.content.cloneNode(true);
   const card = fragment.querySelector(".food-card");
+  const id = ++foodSequence;
+  card.querySelectorAll('.energy-unit').forEach(input => input.name = `energy-unit-${id}`);
+  for (const key of ['moisture', 'energy']) {
+    card.querySelector(`.${key}-error`).id = `${key}-error-${id}`;
+    card.querySelector(`.${key}`).setAttribute('aria-describedby', `${key}-error-${id}`);
+  }
+  card.querySelector('.standard-select').addEventListener('change', () => updateFood(card));
   basicNutrients.forEach((name) => addNutrient(fragment.querySelector(".basic-nutrients"), name));
   card.querySelectorAll("input").forEach((input) => input.addEventListener("input", () => updateFood(card)));
   card.querySelectorAll("input[type=radio]").forEach((input) => input.addEventListener("change", () => updateFood(card)));
@@ -38,6 +46,7 @@ function createFood() {
   card.querySelector(".remove-food").addEventListener("click", () => { card.remove(); refreshFoodCards(); });
   foodList.append(fragment);
   refreshFoodCards();
+  updateFood(card);
 }
 
 function addCustomNutrient(card) {
@@ -82,7 +91,8 @@ function nutrientValues(card) {
   const values = [];
   card.querySelectorAll("[data-nutrient]").forEach((input) => {
     const value = getNumber(input);
-    if (value !== null && value >= 0 && value <= 100) values.push({ name: input.dataset.nutrient, value });
+    input.setAttribute('aria-invalid', input.value !== '' && (value === null || value < 0 || value > 100) ? 'true' : 'false');
+    if (value !== null && value >= 0 && value <= 100) values.push({ name: input.dataset.nutrient, value, builtIn: true });
   });
   card.querySelectorAll(".custom-field").forEach((row) => {
     const name = row.querySelector(".custom-name").value.trim();
@@ -99,8 +109,8 @@ function calculation(card) {
   const { moisture, energy, valid } = validate(card);
   if (!valid) return null;
   const unit = card.querySelector(".energy-unit:checked").value;
-  return nutrientValues(card).map(({ name, value }) => ({
-    name, value,
+  return nutrientValues(card).map(({ name, value, builtIn }) => ({
+    name, value, builtIn,
     dm: value / (100 - moisture) * 100,
     perKcal: unit === "100g" ? value * 1000 / energy : value * 10000 / energy
   }));
@@ -110,10 +120,12 @@ function updateFood(card) {
   const output = card.querySelector(".result-cards");
   const status = card.querySelector(".result-status");
   const values = calculation(card);
+  const key = card.querySelector('.standard-select').value;
+  card.querySelector('.standard-note').textContent = '健康な成犬の最低推奨濃度との参考比較です。最適量や上限ではなく、不足・過剰・適合は判定しません。FEDIAFの95・110条件の説明は「基準値の読み方」をご確認ください。';
   if (!values) { status.textContent = "水分・MEを正しく入力してください"; output.innerHTML = '<p class="empty-results">成分値を入力すると、ここに換算結果が表示されます。</p>'; renderComparisonIfOpen(); return; }
   if (!values.length) { status.textContent = "成分値を入力してください"; output.innerHTML = '<p class="empty-results">保証成分値を入力すると、換算結果が表示されます。</p>'; renderComparisonIfOpen(); return; }
   status.textContent = `${values.length} 成分を換算済み`;
-  output.innerHTML = values.map((item) => `<article class="result-card"><h4 class="result-name">${escapeHtml(item.name)}</h4><div class="result-values"><div><span>表示値</span><strong>${format(item.value)}%</strong></div><div><span>乾物換算</span><strong class="highlight">${format(item.dm)}% DM</strong></div><div><span>1,000kcalあたり</span><strong>${formatPerKcal(item.perKcal)}</strong></div></div></article>`).join("");
+  output.innerHTML = values.map((item) => `<article class="result-card"><h4 class="result-name">${escapeHtml(item.name)}</h4><div class="result-values"><div><span>表示値</span><strong>${format(item.value, 2)}%</strong></div><div><span>乾物換算</span><strong class="highlight">${format(item.dm, 2)}% DM</strong></div><div><span>1,000kcalあたり</span><strong>${formatPerKcal(item.perKcal)}</strong></div></div>${renderStandard(item, key)}</article>`).join("");
   renderComparisonIfOpen();
 }
 

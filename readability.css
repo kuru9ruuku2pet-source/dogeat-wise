@@ -1,0 +1,38 @@
+/* Two steps larger: most text +4px, formerly tiny annotations at least 15px. */
+body{font-size:19px;line-height:1.75}
+.app-shell{width:min(100%,960px)}
+.site-header{height:auto;min-height:76px;padding:14px 20px;flex-wrap:wrap;gap:8px}
+.header-label,.eyebrow,.food-number{font-size:16px}
+.hero h1,.section-heading h2{font-size:30px}
+.hero>p:last-child,.field,.unit-choice legend{font-size:17px}
+.notice,.nutrient-field,.text-button,.unit-choice label,.empty-results{font-size:16px}
+.food-title{font-size:24px;overflow-wrap:anywhere}
+.field span,.field b,.unit-choice b,.percent-chip{font-size:15px}
+.input-unit input,.custom-name,.food-name,select{font-size:19px;min-height:54px}
+.food-name{width:100%;border:1px solid #c7d4cc;border-radius:9px;padding:10px;color:var(--ink);font-family:inherit}
+.input-unit input{padding-right:52px}
+.input-unit em{font-size:16px;top:13px}
+.field-error,.panel-heading p,.optional-label,.result-status,.comparison-help{font-size:15px}
+.panel-heading h3,.results h3{font-size:20px}
+.result-name{font-size:18px;overflow-wrap:anywhere}
+.result-values span{font-size:15px}
+.result-values strong{font-size:18px;white-space:normal;overflow-wrap:anywhere}
+.result-values strong.highlight{font-size:20px}
+.result-cards{grid-template-columns:1fr}
+.result-values{gap:12px}
+.add-nutrient-row{flex-wrap:wrap}
+.add-nutrient-row select{font-size:16px;max-width:100%;height:auto}
+.comparison table,.comparison thead th{font-size:16px}
+.comparison .metric{font-size:15px}
+.remove-custom{height:54px}
+.reference-guide{background:#fffdf7;border:1px solid #dce4de;border-radius:14px;padding:18px;margin-top:20px;font-size:16px;overflow-wrap:anywhere}
+summary{cursor:pointer;font-weight:700}
+.reference-guide a{color:#245d49;text-decoration:underline}
+.standard-control{display:block;font-size:17px;font-weight:700;margin-bottom:10px}
+.standard-select{display:block;width:100%;margin-top:6px;font-size:16px;padding:8px;white-space:normal}
+.standard-note{font-size:15px;margin:8px 0 20px;color:#38594b}
+.standard-result{margin:14px 0 0;border-top:1px solid #dce4de;padding-top:12px;font-size:16px}
+.standard-result span,.standard-result strong{display:block}
+.standard-result strong{font-size:19px}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #34755a;outline-offset:3px}
+@media(max-width:599px){.nutrient-inputs{grid-template-columns:repeat(2,minmax(0,1fr))}.form-grid{grid-template-columns:1fr}.results-heading{align-items:flex-start;flex-direction:column}.result-status{text-align:left}.result-values{grid-template-columns:1fr}.result-values>div{display:flex;justify-content:space-between;gap:10px}.food-card{padding:14px}.results{padding:12px}.custom-field{grid-template-columns:minmax(0,1fr) minmax(70px,.7fr) 29px}}

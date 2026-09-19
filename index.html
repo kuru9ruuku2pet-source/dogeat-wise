@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="readability.css?v=2" />
   </head>
   <body>
     <header class="site-header">
@@ -32,6 +33,20 @@
       </aside>
 
       <section id="food-list" aria-label="入力したフード"></section>
+
+      <details class="reference-guide">
+        <summary>基準値の読み方・計算式・出典</summary>
+        <p>比較対象は健康な成犬の維持期です。成長期・妊娠授乳期・疾患のある犬の食事調整には使わないでください。表示するのは最低値の一部で、最適量・上限・個別の必要量ではありません。</p>
+        <p>FEDIAFの95・110は、1日の維持エネルギーをそれぞれ95・110 × 体重kgの0.75乗 kcalとする条件です。95の条件は、少ないカロリーでも栄養を確保できる濃度を示します。年齢だけで選ぶ区分ではありません。</p>
+        <p>保証値の「以上・以下」は実測値ではありません。換算値が最低値より低くても、不足とは断定できません。最低値以上でも、栄養全体の充足や安全性を保証しません。上限、栄養素間の比率、消化性などはこの比較では評価しません。粗繊維・粗灰分・自由入力成分は比較対象外です。</p>
+        <ul>
+          <li>乾物％ ＝ 製品そのままの成分％ ÷（100 − 水分％）× 100</li>
+          <li>g/1,000kcal ＝ 製品そのままの成分％ × 1,000 ÷ ME（kcal/100g）</li>
+          <li>MEがkcal/kgなら、上の1,000を10,000に置き換えます。成分とMEは同じ製品そのままの重量基準を使い、乾物％を混ぜないでください。</li>
+        </ul>
+        <p>出典：<a href="https://europeanpetfood.org/wp-content/uploads/2025/09/FEDIAF-Nutritional-Guidelines_2025-ONLINE.pdf" target="_blank" rel="noopener">FEDIAF 2025年9月版・表III-3b（16ページ）</a></p>
+        <p>AAFCO：前回参照した<a href="https://www.aafco.org/wp-content/uploads/2023/01/Model_Bills_and_Regulations_Agenda_Midyear_2015_Final_Attachment_A.__Proposed_revisions_to_AAFCO_Nutrient_Profiles_PFC_Final_070214.pdf" target="_blank" rel="noopener">2015年会議資料</a>は改訂案でした。最新の確定版を確認できていないため、数値比較は保留しています。未確認の数値を現行基準として表示しません。</p>
+      </details>
 
       <div class="actions">
         <button id="add-food" class="button button-primary" type="button">＋ 別のフードを追加</button>
@@ -107,6 +122,15 @@
         </div>
 
         <section class="results" aria-live="polite">
+          <label class="standard-control">比較する資料
+            <select class="standard-select">
+              <option value="fediaf95">FEDIAF 2025｜成犬・95条件</option>
+              <option value="fediaf110">FEDIAF 2025｜成犬・110条件</option>
+              <option value="aafco" disabled>AAFCO｜最新の確定資料を確認後に対応</option>
+              <option value="none">基準値を表示しない</option>
+            </select>
+          </label>
+          <p class="standard-note">健康な成犬の最低推奨濃度との参考比較です。最適量や上限ではなく、不足・過剰・適合は判定しません。</p>
           <div class="results-heading"><div><p class="eyebrow">入力すると自動で更新</p><h3>換算結果</h3></div><span class="result-status">水分・MEを入力してください</span></div>
           <div class="result-cards"></div>
         </section>
@@ -119,6 +143,7 @@
     <template id="custom-nutrient-template">
       <div class="custom-field"><label><input class="custom-name" type="text" maxlength="24" placeholder="成分名" aria-label="その他の成分名" /></label><span class="input-unit"><input class="custom-value" type="number" min="0" max="100" step="0.01" inputmode="decimal" placeholder="%" aria-label="その他の成分値（%）" /><em>%</em></span><button class="remove-custom" type="button" aria-label="この成分を削除">×</button></div>
     </template>
-    <script src="app.js"></script>
+    <script src="standards.js?v=2"></script>
+    <script src="app.js?v=2"></script>
   </body>
 </html>
